@@ -1,0 +1,20 @@
+{
+  "name": "govet-js",
+  "version": "0.1.0",
+  "private": true,
+  "description": "govet.js — framework GovTech open-source para detectar atascamiento en la ejecución del gasto público. Monorepo: govet + govet-pe.",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "node --import tsx --test packages/core/src/*.test.ts packages/driver-pe/src/*.test.ts",
+    "demo": "tsx examples/diagnostico.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4",
+    "tsx": "^4.19.0",
+    "@types/node": "^20.14.0"
+  }
+}

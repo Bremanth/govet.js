@@ -1,0 +1,28 @@
+{
+  "name": "govet-pe",
+  "version": "0.1.0",
+  "description": "Driver para Perú: parsea los exports SIAF (Formato A) al Contrato Universal de Datos de govet. Parte de govet.js.",
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p ."
+  },
+  "dependencies": {
+    "govet": "0.1.0"
+  },
+  "keywords": [
+    "govtech",
+    "siaf",
+    "peru",
+    "govet"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/govet-js/govet.js"
+  }
+}

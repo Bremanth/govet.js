@@ -1,0 +1,26 @@
+{
+  "name": "govet",
+  "version": "0.1.0",
+  "description": "Motor puro (sin dependencias) para detectar atascamiento presupuestal en el ciclo Compromiso-Devengado-Girado-Pagado/Rendido. Parte de govet.js.",
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p ."
+  },
+  "keywords": [
+    "govtech",
+    "siaf",
+    "peru",
+    "presupuesto",
+    "govet"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/govet-js/govet.js"
+  }
+}
