@@ -51,6 +51,48 @@ export interface MovimientoSiaf {
   fechaDocB: Date | null;
   proveedorBeneficiario: string | null;
 
+  // Resto del Formato A completo (67 columnas). Texto recortado o null; los
+  // montos (tipoCambio, montoOrigen, monto) siguen la regla de parseMonto.
+  moneda: string | null;
+  anioEjec: string | null;
+  mesEjec: string | null;
+  secEjec: string | null;
+  secEjec2: string | null;
+  nombreEjec2: string | null;
+  modCompra: string | null;
+  tipoProc: string | null;
+  area: string | null;
+  ciclo: string | null;
+  origen: string | null;
+  tipoFinanc: string | null;
+  tp: string | null;
+  tipoRecurso: string | null; // "TR"
+  tc: string | null; // "TC" (no confundir con "T.C.", el tipo de cambio)
+  anioCta: string | null;
+  banco: string | null;
+  cuenta: string | null;
+  tipoProv: string | null;
+  proy: string | null;
+  tipoGiro: string | null;
+  tipoCambio: number | null; // "T.C."
+  montoOrigen: number | null;
+  anioCtb: string | null;
+  mesCtb: string | null;
+  diaCtb: string | null;
+  prodPry: string | null;
+  actAiObra: string | null;
+  programa: string | null; // "Prg"
+  funcion: string | null;
+  divisionFunc: string | null;
+  grupoFunc: string | null;
+  meta: string | null;
+  monto: number | null;
+  anioProceso: string | null;
+  mesProceso: string | null;
+  diaProceso: string | null;
+  estadoEnvio: string | null;
+  edicion: string | null;
+
   // Trazabilidad: de qué fila del archivo original vino este movimiento,
   // para poder señalar un problema de datos hasta la fuente.
   filaOrigen: number;
@@ -69,6 +111,24 @@ export interface ResultadoParseo {
   totalDeclarado: number | null; // la fila "TOTAL EN MONEDA NACIONAL" del reporte, si existe
   totalCalculado: number;
   reconciliaOk: boolean; // totalDeclarado ~= totalCalculado, con tolerancia
+  /** Datos de las filas sobre la cabecera; vacío si el archivo empieza en la cabecera. */
+  encabezado: EncabezadoReporte;
+}
+
+/**
+ * Filas sobre la cabecera del reporte del SIAF: "SECTOR | 00 - X",
+ * "EJECUTORA | 008 - NOMBRE", "Fecha: | 29/09/2026"… Cada campo es el texto
+ * tal cual; `titulos` son las líneas "REPORTE …" / "POR …".
+ */
+export interface EncabezadoReporte {
+  sector?: string;
+  pliego?: string;
+  ejecutora?: string;
+  registro?: string;
+  periodo?: string;
+  fecha?: string;
+  hora?: string;
+  titulos?: string[];
 }
 
 export interface IndicadorPendiente {
@@ -90,12 +150,16 @@ export interface IndicadorPendiente {
   codDocOrigen: string | null;
   numDocOrigen: string | null;
   fechaDocOrigen: Date | null;
+  /** El movimiento de origen (el mismo del que salen los campos de arriba), para leer cualquier otro campo. */
+  movimiento: MovimientoSiaf | null;
 }
 
 /** Una fila de "Ejecución Detallada" (modelos 659/662): un movimiento tal
  * cual, con su monto en la columna de SU fase, igual que lo muestra Melissa
  * (nunca fusiona fases en una fila, cada movimiento es su propia fila). */
 export interface FilaEjecucionDetallada {
+  /** El movimiento de origen de la fila, para leer cualquier otro campo. */
+  movimiento: MovimientoSiaf;
   expediente: string;
   fase: Fase;
   subRegistro: string | null; // el "N"/"R"/"C" que acompaña a la fase (ej. "GC N")

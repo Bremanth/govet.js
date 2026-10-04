@@ -32,6 +32,45 @@ function mov(parcial: Partial<MovimientoSiaf>): MovimientoSiaf {
     numDocB: null,
     fechaDocB: null,
     proveedorBeneficiario: null,
+    moneda: null,
+    anioEjec: null,
+    mesEjec: null,
+    secEjec: null,
+    secEjec2: null,
+    nombreEjec2: null,
+    modCompra: null,
+    tipoProc: null,
+    area: null,
+    ciclo: null,
+    origen: null,
+    tipoFinanc: null,
+    tp: null,
+    tipoRecurso: null,
+    tc: null,
+    anioCta: null,
+    banco: null,
+    cuenta: null,
+    tipoProv: null,
+    proy: null,
+    tipoGiro: null,
+    tipoCambio: null,
+    montoOrigen: null,
+    anioCtb: null,
+    mesCtb: null,
+    diaCtb: null,
+    prodPry: null,
+    actAiObra: null,
+    programa: null,
+    funcion: null,
+    divisionFunc: null,
+    grupoFunc: null,
+    meta: null,
+    monto: null,
+    anioProceso: null,
+    mesProceso: null,
+    diaProceso: null,
+    estadoEnvio: null,
+    edicion: null,
     filaOrigen: 1,
     ...parcial,
   };
@@ -130,4 +169,36 @@ test('etiquetaEstado: nunca inventa un nombre para un código no mapeado', () =>
   assert.equal(etiquetaEstado('A'), 'APROBADO');
   assert.equal(etiquetaEstado('Z'), '(desconocido: Z)');
   assert.equal(etiquetaEstado(null), '(vacío)');
+});
+
+test('pendiente: ordenado por expediente, como Melissa', () => {
+  const movs: MovimientoSiaf[] = [
+    mov({ expediente: 'E2', fase: 'C', montoSoles: 100, fechaAprobacion: new Date('2026-01-01') }),
+    mov({ expediente: 'E1', fase: 'C', montoSoles: 100, fechaAprobacion: new Date('2026-03-01') }),
+  ];
+  const r = pendiente('C', 'D', movs, { fechaCorte: new Date('2026-04-01') });
+  assert.deepEqual(r.map((p) => p.expediente), ['E1', 'E2']);
+});
+
+test('pendiente: cada fila lleva su movimiento de origen', () => {
+  const origen = mov({ expediente: 'E1', fase: 'D', montoSoles: 100, codDoc: 'DOC-D', meta: '0001' });
+  const r = pendiente('D', 'G', [origen]);
+  assert.equal(r[0].movimiento, origen);
+  assert.equal(r[0].movimiento?.meta, '0001');
+});
+
+test('ejecucionDetallada: ordena por expediente, fase del ciclo, secuencia y correlativo; lleva el movimiento', () => {
+  const movs: MovimientoSiaf[] = [
+    mov({ expediente: 'E1', fase: 'G', subRegistro: '1', correlativo: '1', montoSoles: 1 }),
+    mov({ expediente: 'E1', fase: 'C', subRegistro: '2', correlativo: '1', montoSoles: 1 }),
+    mov({ expediente: 'E1', fase: 'C', subRegistro: '1', correlativo: '2', montoSoles: 1 }),
+    mov({ expediente: 'E1', fase: 'C', subRegistro: '1', correlativo: '1', montoSoles: 1 }),
+    mov({ expediente: 'E0', fase: 'D', subRegistro: '1', correlativo: '1', montoSoles: 1 }),
+  ];
+  const filas = ejecucionDetallada(movs);
+  assert.deepEqual(
+    filas.map((f) => `${f.expediente}${f.fase}${f.subRegistro}${f.movimiento.correlativo}`),
+    ['E0D11', 'E1C11', 'E1C12', 'E1C21', 'E1G11']
+  );
+  assert.equal(filas[0].movimiento, movs[4]);
 });

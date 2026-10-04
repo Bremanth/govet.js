@@ -74,7 +74,10 @@ npm run demo
 Funcional y con tests para: Pendientes por Devengar/Girar/Pagar/Rendir,
 Ejecución Detallada 659/662, el candado de estados, y el parser del
 Formato A (incluye cabeceras multilínea entre comillas, montos con signo
-negativo al final, y reconciliación de totales).
+negativo al final, y reconciliación de totales). El parser lee las 67
+columnas del Formato A completo y los datos del encabezado del reporte
+(Sector, Pliego, Ejecutora, Periodo, Fecha…); cada fila de Pendientes y de
+Ejecución Detallada trae su `movimiento` de origen.
 
 Pendiente: catálogo de `Cod. Doc.`, Web Worker para archivos grandes
 (60-70k filas), agregación de varios meses, y el "rastro" completo de las
