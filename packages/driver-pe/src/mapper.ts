@@ -15,7 +15,7 @@ export function normalizarCabecera(h: string): string {
     .toLowerCase();
 }
 
-/** Alias -> campo canónico de MovimientoSiaf. Solo lo que el core usa hoy. */
+/** Alias -> campo canónico de MovimientoSiaf. Cubre las 67 columnas del Formato A completo. */
 export const ALIAS_FORMATO_A: Record<string, string> = {
   'expediente siaf': 'expediente',
   fase: 'fase',
@@ -44,7 +44,59 @@ export const ALIAS_FORMATO_A: Record<string, string> = {
   'num doc b': 'numDocB',
   'fecha doc b': 'fechaDocB',
   'nombre proveedor/beneficiari': 'proveedorBeneficiario',
+  // Resto del Formato A completo (67 columnas)
+  'ano ejec': 'anioEjec',
+  'mes ejec': 'mesEjec',
+  'sec ejec': 'secEjec',
+  'sec ejec 2': 'secEjec2',
+  'nombre ejec 2': 'nombreEjec2',
+  'mod compra': 'modCompra',
+  'tipo proc': 'tipoProc',
+  area: 'area',
+  ciclo: 'ciclo',
+  origen: 'origen',
+  'tipo financ': 'tipoFinanc',
+  tp: 'tp',
+  tr: 'tipoRecurso',
+  tc: 'tc',
+  ano: 'anioCta',
+  bnc: 'banco',
+  cta: 'cuenta',
+  'tipo prov': 'tipoProv',
+  proy: 'proy',
+  'tipo giro': 'tipoGiro',
+  'monto origen': 'montoOrigen',
+  'ano ctb': 'anioCtb',
+  'mes ctb': 'mesCtb',
+  'dia ctb': 'diaCtb',
+  'prod pry': 'prodPry',
+  'act ai obra': 'actAiObra',
+  prg: 'programa',
+  funcion: 'funcion',
+  'division func': 'divisionFunc',
+  'grupo func': 'grupoFunc',
+  meta: 'meta',
+  monto: 'monto',
+  'ano proceso': 'anioProceso',
+  'mes proceso': 'mesProceso',
+  'dia proceso': 'diaProceso',
+  'fecha db oracle': 'fechaDbOracle',
+  'estado envio': 'estadoEnvio',
+  edicion: 'edicion',
 };
+
+/**
+ * "T.C." (tipo de cambio) y "TC" quedan iguales al normalizar: se distinguen
+ * por los puntos. Clave: la cabecera cruda sin espacios y en minúsculas.
+ */
+export const ALIAS_CRUDO: Record<string, string> = { 't.c.': 'tipoCambio' };
+
+/** Texto recortado, o null si la celda falta o está vacía. */
+export function txt(v: string | undefined | null): string | null {
+  if (v === undefined || v === null) return null;
+  const t = v.trim();
+  return t === '' ? null : t;
+}
 
 /**
  * Convierte "9,837.41" -> 9837.41 y "960.00-" -> -960 (el SIAF pone el

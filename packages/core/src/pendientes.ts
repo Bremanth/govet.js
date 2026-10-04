@@ -230,10 +230,12 @@ export function pendiente(
       codDocOrigen: m?.codDoc ?? null,
       numDocOrigen: m?.numDoc ?? null,
       fechaDocOrigen: m?.fechaDoc ?? null,
+      movimiento: m,
     });
   }
 
-  return resultado.sort((a, b) => (b.diasTranscurridos ?? 0) - (a.diasTranscurridos ?? 0));
+  // Como Melissa: ordenado por expediente (antes, por días transcurridos de mayor a menor).
+  return resultado.sort((a, b) => a.expediente.localeCompare(b.expediente));
 }
 
 /** Atajo para los 4 modelos, con los filtros que ya confirmamos con tus datos. */
@@ -247,6 +249,8 @@ export const modelos = {
   pendientesPorRendir: (movs: MovimientoSiaf[], opts?: OpcionesPendiente) =>
     pendiente('G', 'R', movs, { tiposOperacionIncluidos: ['AV', 'A', 'C'], ...opts }),
 };
+
+const ORDEN_FASE: Fase[] = ['C', 'D', 'G', 'P', 'R'];
 
 /**
  * Modelos 659/662 ("Ejecución Detallada"): a diferencia de pendiente(), acá
@@ -269,6 +273,7 @@ export function ejecucionDetallada(
 
   return filtrados
     .map((m) => ({
+      movimiento: m,
       expediente: m.expediente,
       fase: m.fase,
       subRegistro: m.subRegistro,
@@ -290,7 +295,14 @@ export function ejecucionDetallada(
       numDocB: m.numDocB,
       proveedorBeneficiario: m.proveedorBeneficiario,
     }))
-    .sort((a, b) => a.expediente.localeCompare(b.expediente) || (a.fechaDoc?.getTime() ?? 0) - (b.fechaDoc?.getTime() ?? 0));
+    // Como el 659 de Melissa: por expediente, luego por fase del ciclo (C, D, G, P, R) y dentro de ella por secuencia y correlativo.
+    .sort(
+      (a, b) =>
+        a.expediente.localeCompare(b.expediente) ||
+        ORDEN_FASE.indexOf(a.fase) - ORDEN_FASE.indexOf(b.fase) ||
+        (a.subRegistro ?? '').localeCompare(b.subRegistro ?? '') ||
+        (a.movimiento.correlativo ?? '').localeCompare(b.movimiento.correlativo ?? '')
+    );
 }
 
 export const modelosDetalle = {
