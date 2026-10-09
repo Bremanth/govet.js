@@ -81,11 +81,12 @@ const ESTADOS_VALIDOS_DEFAULT = ['A'];
  * govet-pe. Es la fuente más fuerte que hemos tenido: la misma
  * pantalla que genera el archivo, no un endpoint ni un payload de otra vista.
  *
- * F, BN, O, T, W, Y no aparecen en este desplegable pero SÍ se observaron
- * en datos reales exportados (F: 113 filas en un archivo real) — quedan
- * marcados como no confirmados en este desplegable. Es una inconsistencia
- * real del propio SIAF, no un error nuestro: el filtro de búsqueda no
- * ofrece todos los valores que el campo puede tener en los datos exportados.
+ * "F" se observó en datos reales (113 filas en un archivo) pero no está en
+ * este desplegable: su nombre sigue sin confirmar y se muestra como
+ * desconocido. Antes se le ponía "PENDIENTE DE FIRMA", igual que a BN, O, T,
+ * W e Y otros nombres: esos nombres son del catálogo de estados de
+ * Certificación y Compromiso Anual (ver CATALOGO_ESTADO_CERTIFICACION), no
+ * de este, y sus códigos eran supuestos.
  */
 export const CATALOGO_ESTADO_REGISTRO: Record<string, string> = {
   A: 'APROBADO',
@@ -96,14 +97,24 @@ export const CATALOGO_ESTADO_REGISTRO: Record<string, string> = {
   R: 'RECHAZADO',
   V: 'VERIFICADO (PENDIENTE)',
   X: 'APROBADO (ANULACION EN VERIFICACION)',
-  // No confirmados en el desplegable de "Formatos SIAF", pero observados
-  // en archivos reales exportados:
-  BN: 'EN BANCO DE LA NACIÓN (no confirmado en el filtro actual)',
-  F: 'PENDIENTE DE FIRMA (no confirmado en el filtro actual)',
-  O: 'ENVIADO A OPP (no confirmado en el filtro actual)',
-  T: 'EN TRANSITO (no confirmado en el filtro actual)',
-  W: 'EN RENIEC (no confirmado en el filtro actual)',
-  Y: 'INACTIVO (no confirmado en el filtro actual)',
+};
+
+/**
+ * Estados de Certificación y Compromiso Anual (columna "Est. Env." del reporte
+ * "Certificación y Compromiso Anual" del SIAF). Es otro catálogo que el de
+ * Est Registro del Formato A: los mismos códigos significan otra cosa
+ * (aquí V = PENDIENTE DE FIRMA y P = REGISTRADO).
+ *
+ * Confirmado el 2026-10-09: los nombres, con el desplegable "Estado Registro"
+ * de ese reporte; los códigos A, V y P, con un export real donde el reporte
+ * pone el código y el nombre en la misma fila. El desplegable trae además EN
+ * BANCO DE LA NACIÓN, ENVIADO A OPP, RECHAZADO, EN TRANSITO, EN VERIFICACION,
+ * EN RENIEC e INACTIVO, cuyos códigos aún no se han visto.
+ */
+export const CATALOGO_ESTADO_CERTIFICACION: Record<string, string> = {
+  A: 'APROBADO',
+  V: 'PENDIENTE DE FIRMA',
+  P: 'REGISTRADO',
 };
 
 export function etiquetaEstado(codigo: string | null): string {
