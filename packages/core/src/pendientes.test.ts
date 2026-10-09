@@ -168,6 +168,8 @@ test('modelosDetalle.ejecucionDetallada659 excluye Pagado y Rendido', () => {
 test('etiquetaEstado: nunca inventa un nombre para un código no mapeado', () => {
   assert.equal(etiquetaEstado('A'), 'APROBADO');
   assert.equal(etiquetaEstado('Z'), '(desconocido: Z)');
+  // F aparece en datos reales pero su nombre no está confirmado.
+  assert.equal(etiquetaEstado('F'), '(desconocido: F)');
   assert.equal(etiquetaEstado(null), '(vacío)');
 });
 
